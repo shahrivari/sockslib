@@ -48,6 +48,7 @@ public class SocksServerBuilder {
   private int bindPort = DEFAULT_PORT;
   private boolean daemon = false;
   private ExecutorService executorService;
+  private int bufferSize = 1024 * 1024;
   private SessionManager sessionManager = new BasicSessionManager();
   private SSLConfiguration sslConfiguration;
   private Map<String, SessionListener> sessionListeners = new HashMap<>();
@@ -199,6 +200,12 @@ public class SocksServerBuilder {
     return this;
   }
 
+  public SocksServerBuilder setBufferSize(int bufSize) {
+    this.bufferSize = checkNotNull(bufferSize);
+    return this;
+  }
+
+
   public SocksServerBuilder setDaemon(boolean daemon) {
     this.daemon = daemon;
     return this;
@@ -251,6 +258,7 @@ public class SocksServerBuilder {
       proxyServer = new SSLSocksProxyServer(socksHandlerClass, sslConfiguration);
     }
     proxyServer.setTimeout(timeout);
+    proxyServer.setBufferSize(bufferSize);
     proxyServer.setBindAddr(bindAddr);
     proxyServer.setBindPort(bindPort);
     proxyServer.setDaemon(daemon);
